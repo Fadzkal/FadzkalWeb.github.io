@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-slate-950 text-slate-300 font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold text-white;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  }
+  .text-glow-green {
+    text-shadow: 0 0 20px rgba(0, 255, 102, 0.5);
+  }
+  .box-glow {
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  }
+  .box-glow-hover:hover {
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+  }
+}
