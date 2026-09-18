@@ -1,0 +1,97 @@
+"use client";
+import React from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+
+export const HeroParallax = ({ products }) => {
+  const firstRow = products.slice(0, 5);
+  const secondRow = products.slice(5, 10);
+  const thirdRow = products.slice(10, 15);
+  const ref = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
+
+  const translateX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1000]), springConfig);
+  const translateXReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1000]), springConfig);
+  const rotateX = useSpring(useTransform(scrollYProgress, [0, 0.2], [15, 0]), springConfig);
+  const opacity = useSpring(useTransform(scrollYProgress, [0, 0.2], [0.2, 1]), springConfig);
+  const rotateZ = useSpring(useTransform(scrollYProgress, [0, 0.2], [20, 0]), springConfig);
+  const translateY = useSpring(useTransform(scrollYProgress, [0, 0.2], [-700, 500]), springConfig);
+  
+  return (
+    <div
+      ref={ref}
+      className="h-[300vh] py-40 overflow-hidden antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d] bg-white border-t border-zinc-100"
+    >
+      <Header />
+      <motion.div
+        style={{
+          rotateX,
+          rotateZ,
+          translateY,
+          opacity,
+        }}
+        className=""
+      >
+        <motion.div className="flex flex-row-reverse space-x-reverse space-x-12 md:space-x-20 mb-12 md:mb-20">
+          {firstRow.map((product) => (
+            <ProductCard product={product} translate={translateX} key={product.title} />
+          ))}
+        </motion.div>
+        <motion.div className="flex flex-row mb-12 md:mb-20 space-x-12 md:space-x-20 ">
+          {secondRow.map((product) => (
+            <ProductCard product={product} translate={translateXReverse} key={product.title} />
+          ))}
+        </motion.div>
+        <motion.div className="flex flex-row-reverse space-x-reverse space-x-12 md:space-x-20">
+          {thirdRow.map((product) => (
+            <ProductCard product={product} translate={translateX} key={product.title} />
+          ))}
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+};
+
+export const Header = () => {
+  return (
+    <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0">
+      <h1 className="text-3xl md:text-7xl font-display font-bold text-zinc-900">
+        10+ Proyek Nyata. <br /> Berdampak & Berinovasi.
+      </h1>
+      <p className="max-w-2xl text-base md:text-xl mt-8 text-zinc-500 font-light">
+        Kumpulan karya terbaik dari berbagai kompetisi nasional, penelitian laboratorium, hingga solusi bisnis praktis. Dari hardware IoT, web interaktif, hingga mobile app.
+      </p>
+    </div>
+  );
+};
+
+export const ProductCard = ({ product, translate }) => {
+  return (
+    <motion.div
+      style={{
+        x: translate,
+      }}
+      whileHover={{
+        y: -20,
+      }}
+      key={product.title}
+      className="group/product h-72 md:h-96 w-[20rem] md:w-[30rem] relative shrink-0"
+    >
+      <div className="block group-hover/product:shadow-2xl rounded-2xl md:rounded-[2rem] overflow-hidden border border-zinc-200 shadow-lg">
+        <img
+          src={product.thumbnail}
+          className="object-cover object-left-top absolute h-full w-full inset-0 bg-zinc-100"
+          alt={product.title}
+        />
+      </div>
+      <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-40 bg-zinc-900 pointer-events-none rounded-2xl md:rounded-[2rem] transition-opacity duration-300"></div>
+      <h2 className="absolute bottom-6 left-6 opacity-0 group-hover/product:opacity-100 text-white font-bold text-xl md:text-2xl transition-opacity duration-300">
+        {product.title}
+      </h2>
+    </motion.div>
+  );
+};

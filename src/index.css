@@ -8,11 +8,11 @@
   }
   
   body {
-    @apply bg-slate-950 text-slate-300 font-sans;
+    @apply bg-white text-zinc-600 font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold text-white;
+    @apply font-display font-bold text-zinc-900 tracking-tight;
   }
 }
 

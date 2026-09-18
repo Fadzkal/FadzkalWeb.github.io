@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import Lenis from 'lenis';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -63,21 +64,42 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Initialize Lenis for smooth scrolling
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      smoothTouch: false,
+      touchMultiplier: 2,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
     // Simulate loading screen
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1500);
-    return () => clearTimeout(timer);
+
+    return () => {
+      clearTimeout(timer);
+      lenis.destroy();
+    };
   }, []);
 
   if (loading) {
     return (
-      <div className="h-screen w-screen bg-slate-950 flex items-center justify-center">
+      <div className="h-screen w-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-green animate-pulse">
+          <h1 className="text-4xl md:text-6xl font-display font-bold text-zinc-900 animate-pulse">
             Fadzkal Luthfi
           </h1>
-          <p className="mt-4 text-slate-400 font-mono text-sm uppercase tracking-widest animate-fade-in">Initializing portfolio...</p>
+          <p className="mt-4 text-zinc-500 font-mono text-sm uppercase tracking-widest animate-fade-in">Initializing portfolio...</p>
         </div>
       </div>
     );
@@ -85,14 +107,7 @@ function App() {
 
   return (
     <Router>
-      <div className="bg-slate-950 min-h-screen font-sans selection:bg-neon-blue/30 overflow-x-hidden relative">
-        {/* Background Grid */}
-        <div className="fixed inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-        
-        {/* Glowing Orbs */}
-        <div className="fixed top-[-10%] left-[-10%] w-96 h-96 bg-neon-blue/20 rounded-full blur-[100px] z-0 animate-blob"></div>
-        <div className="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-neon-green/10 rounded-full blur-[100px] z-0 animate-blob" style={{ animationDelay: '2s' }}></div>
-
+      <div className="bg-white min-h-screen font-sans selection:bg-zinc-900/10 overflow-x-hidden relative">
         <div className="relative z-10 flex flex-col min-h-screen">
           <Navbar />
           <RouteSEO />
